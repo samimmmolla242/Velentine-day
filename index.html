@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Surprise 💖</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            background-color: #ffebee;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        h1 {
+            color: #d63384;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .input-container {
+            margin-top: 20px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #d63384;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #ff4d6d;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+            animation: bounce 1.5s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+
+        button:hover {
+            background-color: #d63384;
+        }
+
+        .message {
+            font-size: 22px;
+            color: #ff1a4d;
+            display: none;
+            margin-top: 30px;
+            animation: glowText 1.5s infinite alternate;
+        }
+
+        @keyframes glowText {
+            from { text-shadow: 0 0 10px #ff4d6d; }
+            to { text-shadow: 0 0 20px #ff1a4d; }
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 16px;
+            color: #777;
+        }
+
+        /* Surprise Box */
+        .surprise-box {
+            font-size: 80px;
+            cursor: pointer;
+            display: none;
+            margin-top: 20px;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .box-open {
+            transform: scale(1.2) rotateX(180deg);
+        }
+
+        /* Falling Hearts Animation */
+        .falling-hearts {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart-fall {
+            position: absolute;
+            color: red;
+            font-size: 20px;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Falling Hearts -->
+    <div class="falling-hearts"></div>
+
+    <div class="container" id="mainContainer">
+        <h1>Enter Your Girlfriend's Name 💖</h1>
+        <div class="input-container">
+            <input type="text" id="girlfriendName" placeholder="Type her name...">
+            <br>
+            <button onclick="generateLink()">Generate Love Link 💌</button>
+        </div>
+        <p id="loveLink" class="message"></p>
+    </div>
+
+    <div id="surpriseContainer" style="display: none;">
+        <h1>💖 Dear <span id="girlfriendNameDisplay"></span>, 💖</h1>
+        <p>Click the surprise gift box to reveal your special message! 🎁</p>
+        <div class="surprise-box" onclick="openSurpriseBox()">🎁</div>
+        <p class="message" id="hiddenMessage"></p>
+        <p class="footer">With all my love, Your Valentine ❤️</p>
+    </div>
+
+    <script>
+        function generateLink() {
+            let name = document.getElementById("girlfriendName").value.trim();
+            if (name === "") {
+                alert("Please enter a name!");
+                return;
+            }
+            let encodedName = encodeURIComponent(name);
+            let url = window.location.href.split("?")[0] + "?name=" + encodedName;
+            document.getElementById("loveLink").innerHTML = 
+                "❤️ Share this link with " + name + ": <br> <a href='" + url + "' target='_blank'>" + url + "</a>";
+            document.getElementById("loveLink").style.display = "block";
+        }
+
+        function openSurpriseBox() {
+            let box = document.querySelector(".surprise-box");
+            box.classList.add("box-open");
+
+            setTimeout(() => {
+                let messages = [
+                    "You are the most beautiful part of my life! ❤️",
+                    "I love you more than words can say! 💞",
+                    "Every moment with you is a dream come true! 😘",
+                    "You are my heart, my soul, my everything! 💖",
+                    "Forever and always, I am yours! 💍💖"
+                ];
+                let randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+                let messageContainer = document.getElementById("hiddenMessage");
+                messageContainer.innerText = randomMessage;
+                messageContainer.style.display = "block";
+
+                // Remove the box after animation
+                setTimeout(() => {
+                    box.style.display = "none";
+                }, 500);
+            }, 500);
+        }
+
+        function checkForGirlfriendName() {
+            let params = new URLSearchParams(window.location.search);
+            if (params.has("name")) {
+                let girlfriendName = decodeURIComponent(params.get("name"));
+                document.getElementById("girlfriendNameDisplay").innerText = girlfriendName;
+
+                document.getElementById("mainContainer").style.display = "none";
+                document.getElementById("surpriseContainer").style.display = "block";
+                document.querySelector(".surprise-box").style.display = "block";
+            }
+        }
+
+        checkForGirlfriendName();
+
+        // Falling Hearts Animation
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart-fall");
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+            heart.style.fontSize = Math.random() * 20 + 10 + "px";
+            document.querySelector(".falling-hearts").appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        setInterval(createHeart, 300);
+    </script>
+
+</body>
+</html>
